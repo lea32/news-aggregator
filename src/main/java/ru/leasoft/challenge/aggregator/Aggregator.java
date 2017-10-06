@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.leasoft.challenge.aggregator.container.configuration.Configuration;
 import ru.leasoft.challenge.aggregator.container.configuration.utils.StartupConfigLocator;
+import ru.leasoft.challenge.aggregator.container.utils.ExecutionFlow;
 
 import java.io.File;
 
@@ -16,7 +17,8 @@ public class Aggregator {
 
         configureApplication(args);
 
-
+        ExecutionFlow.awaitTermination();
+        log.warn("Terminated");
     }
 
     private static void configureApplication(String[] args) {

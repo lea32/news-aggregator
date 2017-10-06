@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#Check gradle installed
+command -v gradle > /dev/null 2>&1 || { echo >&2 "Gradle build system not found. Aborting."; exit 1; }
+
+gradle clean
+gradle installDist
+
+cd ./build/install/news-aggregator/bin
+./news-aggregator
