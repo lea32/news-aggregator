@@ -2,6 +2,7 @@ package ru.leasoft.challenge.aggregator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.leasoft.challenge.aggregator.container.Container;
 import ru.leasoft.challenge.aggregator.container.configuration.Configuration;
 import ru.leasoft.challenge.aggregator.container.configuration.utils.StartupConfigLocator;
 import ru.leasoft.challenge.aggregator.container.utils.ExecutionFlow;
@@ -12,13 +13,23 @@ public class Aggregator {
 
     private static final Logger log = LoggerFactory.getLogger(Aggregator.class);
 
+    private static Container container;
+
     public static void main(String[] args) {
         log.info("Aggregator starts...");
 
         configureApplication(args);
+        initAndStartContainer();
+        ExecutionFlow.awaitTerminationThenDo(Aggregator::stopContainer);
+    }
 
-        ExecutionFlow.awaitTermination();
-        log.warn("Terminated");
+    private static void initAndStartContainer() {
+        container = Container.buildContainer();
+        container.start();
+    }
+
+    private static void stopContainer() {
+        container.stop();
     }
 
     private static void configureApplication(String[] args) {

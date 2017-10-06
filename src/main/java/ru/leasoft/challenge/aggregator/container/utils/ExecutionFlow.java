@@ -14,8 +14,8 @@ public class ExecutionFlow {
     /**
      * Stops execution of current thread until termination signal (SIGINT, SIGTERM)
      */
-    public static synchronized void awaitTermination() {
-        registerShutdownHook();
+    public static synchronized void awaitTerminationThenDo(Runnable shutdownActions) {
+        registerShutdownHook(shutdownActions);
 
         try {
             lock.acquire();
@@ -24,13 +24,11 @@ public class ExecutionFlow {
         }
     }
 
-    private static void registerShutdownHook() {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                lock.release();
-            }
-        });
+    private static void registerShutdownHook(Runnable shutdownActions) {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            lock.release();
+            shutdownActions.run();
+        }));
     }
 
 }

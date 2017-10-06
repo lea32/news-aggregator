@@ -13,12 +13,14 @@ public class Configuration {
 
     private static final Logger log = LoggerFactory.getLogger(Configuration.class);
 
+    private String webserverHost;
+    private int webserverPort;
+
     private Configuration(File configFile) {
         ConfigurationFileParser parser = new ConfigurationFileParser();
         FullConfigStruct config = parser.parse(configFile);
-        log.info(config.getWebserverConfig().host);
-        log.info(config.getDatabaseConfig().url);
-        log.info(Long.toString(config.getDatabaseConfig().pool.maxSize));
+        this.webserverHost = config.getWebserverConfig().host;
+        this.webserverPort = config.getWebserverConfig().port;
     }
 
     public static Configuration getInstance() {
@@ -44,4 +46,11 @@ public class Configuration {
         instance = new Configuration(configFile);
     }
 
+    public String getWebserverHost() {
+        return webserverHost;
+    }
+
+    public int getWebserverPort() {
+        return webserverPort;
+    }
 }
