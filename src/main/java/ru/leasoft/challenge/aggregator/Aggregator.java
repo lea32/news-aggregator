@@ -14,17 +14,16 @@ public class Aggregator {
     public static void main(String[] args) {
         log.info("Aggregator starts...");
 
-        readConfigFile(args);
+        configureApplication(args);
 
 
     }
 
-    private static void readConfigFile(String[] args) {
+    private static void configureApplication(String[] args) {
         File configFile = StartupConfigLocator.obtainConfigFile(args);
         log.info("Loading config from " + configFile.getAbsolutePath());
 
         Configuration.bootstrapFromConfigFile(configFile);
-
     }
 
 }

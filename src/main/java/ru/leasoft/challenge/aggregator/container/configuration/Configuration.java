@@ -30,6 +30,11 @@ public class Configuration {
         return instance;
     }
 
+    /**
+     * Bootstraps configuration and placeholders from DSL-based configuration file.
+     * Not thread-safe.
+     * @param configFile configuration file     *
+     */
     public static synchronized void bootstrapFromConfigFile(File configFile) {
         if (instance != null) {
             log.error("Configuration already initialized");

@@ -2,10 +2,36 @@ group 'ru.leasoft.challenge'
 version '1.0-SNAPSHOT'
 
 apply plugin: 'groovy'
-apply plugin: 'java'
 apply plugin: 'application'
 
 sourceCompatibility = 1.7
+
+sourceSets.main.java.srcDirs = []
+sourceSets.main.groovy.srcDirs += ["src/main/java"]
+
+task assembleDefaultConfig {
+    def conf = file("$buildDir/conf")
+    outputs.dir conf
+    doLast {
+        conf.mkdirs()
+        copy {
+            from 'default.config'
+            into conf
+            rename('default.config', 'aggregator')
+        }
+
+    }
+}
+
+distributions {
+    main {
+        contents {
+            from(assembleDefaultConfig) {
+                into "conf"
+            }
+        }
+    }
+}
 
 ext {
     springVersion = '4.3.11.RELEASE'
