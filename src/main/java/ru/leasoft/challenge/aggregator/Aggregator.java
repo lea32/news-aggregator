@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import ru.leasoft.challenge.aggregator.container.Container;
 import ru.leasoft.challenge.aggregator.container.configuration.Configuration;
 import ru.leasoft.challenge.aggregator.container.configuration.utils.StartupConfigLocator;
-import ru.leasoft.challenge.aggregator.container.utils.ExecutionFlow;
+import static ru.leasoft.challenge.aggregator.container.utils.ExecutionFlow.awaitTerminationThenDo;
 
 import java.io.File;
 
@@ -20,7 +20,7 @@ public class Aggregator {
 
         configureApplication(args);
         initAndStartContainer();
-        ExecutionFlow.awaitTerminationThenDo(Aggregator::stopContainer);
+        awaitTerminationThenDo(Aggregator::stopContainer);
     }
 
     private static void initAndStartContainer() {
