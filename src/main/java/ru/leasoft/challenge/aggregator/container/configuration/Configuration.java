@@ -2,25 +2,27 @@ package ru.leasoft.challenge.aggregator.container.configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import ru.leasoft.challenge.aggregator.container.configuration.parsing.ConfigurationFileParser;
 import ru.leasoft.challenge.aggregator.container.configuration.parsing.structures.FullConfigStruct;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
-public class Configuration {
+public class Configuration extends PropertyPlaceholderConfigurer {
 
     private static Configuration instance;
 
     private static final Logger log = LoggerFactory.getLogger(Configuration.class);
 
-    private String webserverHost;
-    private int webserverPort;
+    private FullConfigStruct config;
 
     private Configuration(File configFile) {
         ConfigurationFileParser parser = new ConfigurationFileParser();
-        FullConfigStruct config = parser.parse(configFile);
-        this.webserverHost = config.getWebserverConfig().host;
-        this.webserverPort = config.getWebserverConfig().port;
+        this.config = parser.parse(configFile);
     }
 
     public static Configuration getInstance() {
@@ -47,10 +49,19 @@ public class Configuration {
     }
 
     public String getWebserverHost() {
-        return webserverHost;
+        return config.getWebserverConfig().host;
     }
 
     public int getWebserverPort() {
-        return webserverPort;
+        return config.getWebserverConfig().port;
+    }
+
+    @Override
+    protected void loadProperties(Properties props) throws IOException {
+        super.loadProperties(props);
+
+        Map<String, Object> propsFromConfig = new HashMap<>();
+        config.appendTo(propsFromConfig);
+        propsFromConfig.forEach(props::put);
     }
 }

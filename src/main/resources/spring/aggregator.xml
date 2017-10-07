@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean class="ru.leasoft.challenge.aggregator.container.configuration.Configuration" factory-method="getInstance"/>
+
+    <bean id="dbConnectionTester"
+          class="ru.leasoft.challenge.aggregator.persistence.util.DatabaseConnectionTester"
+          init-method="failFastIfNoConnectionToDatabase">
+        <constructor-arg name="jdbcDriverClass" value="com.mysql.jdbc.Driver"/>
+        <constructor-arg name="url" value="${database.url}"/>
+        <constructor-arg name="username" value="${database.username}"/>
+        <constructor-arg name="password" value="${database.password}"/>
+    </bean>
+
+</beans>

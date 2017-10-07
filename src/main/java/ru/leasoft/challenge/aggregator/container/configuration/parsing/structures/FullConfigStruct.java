@@ -1,6 +1,8 @@
 package ru.leasoft.challenge.aggregator.container.configuration.parsing.structures;
 
-public class FullConfigStruct {
+import java.util.Map;
+
+public class FullConfigStruct implements ConfigComposer {
 
     private DatabaseConfigStruct databaseConfig = new DatabaseConfigStruct();
     private WebserverConfigStruct webserverConfig = new WebserverConfigStruct();
@@ -11,5 +13,11 @@ public class FullConfigStruct {
 
     public WebserverConfigStruct getWebserverConfig() {
         return webserverConfig;
+    }
+
+    @Override
+    public void appendTo(Map<String, Object> configMap) {
+        databaseConfig.appendTo(configMap);
+        webserverConfig.appendTo(configMap);
     }
 }
