@@ -56,6 +56,18 @@ public class Configuration extends PropertyPlaceholderConfigurer {
         return config.getWebserverConfig().port;
     }
 
+    public String getDatabaseUrl() {
+        return config.getDatabaseConfig().url;
+    }
+
+    public String getDatabaseUser() {
+        return config.getDatabaseConfig().username;
+    }
+
+    public String getDatabasePassword() {
+        return config.getDatabaseConfig().password;
+    }
+
     @Override
     protected void loadProperties(Properties props) throws IOException {
         super.loadProperties(props);

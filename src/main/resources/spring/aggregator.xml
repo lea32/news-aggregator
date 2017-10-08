@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+
+    <context:component-scan base-package="ru.leasoft.challenge.aggregator.persistence.dao.impl"/>
 
     <bean class="ru.leasoft.challenge.aggregator.container.configuration.Configuration" factory-method="getInstance"/>
 
@@ -14,13 +19,23 @@
         <constructor-arg name="password" value="${database.password}"/>
     </bean>
 
-    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="dbConnectionTester">
+    <bean id="dbVersioning"
+          class="ru.leasoft.challenge.aggregator.persistence.util.DatabaseVersioningUtil"
+          init-method="validateAndMigrate"
+          depends-on="dbConnectionTester"
+    />
 
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+          depends-on="dbVersioning">
         <property name="packagesToScan" value="ru.leasoft.challenge.aggregator.persistence.entities"/>
 
         <property name="hibernateProperties">
             <props>
                 <prop key="hibernate.connection.driver_class">com.mysql.jdbc.Driver</prop>
+                <prop key="javax.persistence.validation.mode">callback</prop>
+
+                <prop key="hbm2ddl.auto">update</prop>
 
                 <prop key="hibernate.connection.url">${database.url}</prop>
                 <prop key="hibernate.connection.username">${database.username}</prop>
@@ -31,6 +46,7 @@
 
                 <prop key="hibernate.c3p0.min_size">${database.pool.minSize}</prop>
                 <prop key="hibernate.c3p0.max_size">${database.pool.maxSize}</prop>
+                <prop key="hibernate.c3p0.testConnectionOnCheckout">true</prop>
                 <prop key="hibernate.c3p0.acquire_increment">${database.pool.increment}</prop>
 
                 <prop key="hibernate.c3p0.timeout">${database.pool.maxIdle}</prop>
@@ -45,8 +61,6 @@
                 <prop key="hibernate.format_sql">true</prop>
             </props>
         </property>
-
     </bean>
-
 
 </beans>

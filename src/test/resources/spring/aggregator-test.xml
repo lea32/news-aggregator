@@ -1,8 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <jdbc:embedded-database id="embeddedDb" type="H2" />
+    <context:annotation-config/>
+
+    <context:component-scan base-package="ru.leasoft.challenge.aggregator.persistence.dao.impl"/>
+
+    <jdbc:embedded-database id="embeddedDb" type="H2">
+        <jdbc:script location="test-db.sql"/>
+    </jdbc:embedded-database>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean" depends-on="embeddedDb">
+
+        <property name="packagesToScan" value="ru.leasoft.challenge.aggregator.persistence.entities"/>
+
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.connection.driver_class">org.h2.Driver</prop>
+                <prop key="hibernate.connection.url">jdbc:h2:mem:embeddedDb</prop>
+                <prop key="hibernate.connection.username">sa</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+                <prop key="javax.persistence.validation.mode">callback</prop>
+
+                <prop key="hibernate.c3p0.unreturnedConnectionTimeout">60</prop>
+                <prop key="hibernate.c3p0.debugUnreturnedConnectionStackTraces">true</prop>
+            </props>
+
+        </property>
+
+    </bean>
+
+    <tx:annotation-driven/>
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager"
+          p:sessionFactory-ref="sessionFactory"
+    />
+
 
 </beans>

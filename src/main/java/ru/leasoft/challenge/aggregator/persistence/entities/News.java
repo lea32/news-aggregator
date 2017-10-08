@@ -4,16 +4,24 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Date;
 
 @Entity
 @Table(name = "news")
 public class News {
 
+    public static final int MIN_TITLE_LENGTH = 1;
+    public static final int MAX_TITLE_LENGTH = 32000; //less than TEXT / 2
+    public static final int MIN_LOCATION_LENGTH = 1;
+    public static final int MAX_LOCATION_LENGTH = 8000000; //less than MEDIUMTEXT / 2
+
     private long id;
+    @Size(min = MIN_TITLE_LENGTH, max = MAX_TITLE_LENGTH)
     private String title;
+    @Size(min = MIN_LOCATION_LENGTH, max = MAX_LOCATION_LENGTH)
     private String content;
-    private Date appendDate;
+    private Date appendTimestamp;
 
     @NotNull
     private NewsSource newsSource;
@@ -47,23 +55,32 @@ public class News {
         this.content = content;
     }
 
-    @Column(name = "APPEND_DATE")
+    @Column(name = "APPEND_TIMESTAMP")
     @Temporal(TemporalType.TIMESTAMP)
     @CreationTimestamp
-    public Date getAppendDate() {
-        return appendDate;
+    public Date getAppendTimestamp() {
+        return appendTimestamp;
     }
 
-    public void setAppendDate(Date appendDate) {
-        this.appendDate = appendDate;
+    public void setAppendTimestamp(Date appendTimestamp) {
+        this.appendTimestamp = appendTimestamp;
     }
 
-    @ManyToOne(targetEntity = NewsSource.class, optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(targetEntity = NewsSource.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "SOURCE_ID")
     public NewsSource getNewsSource() {
         return newsSource;
     }
 
     public void setNewsSource(NewsSource newsSource) {
         this.newsSource = newsSource;
+    }
+
+    @Transient
+    public boolean isSameAs(News news) {
+        boolean srcIsSame = this.newsSource == null ?
+                news.newsSource == null :
+                news.newsSource != null && this.newsSource.isSameAs(news.newsSource);
+        return this.title.equals(news.title) && this.content.equals(news.content) && srcIsSame;
     }
 }

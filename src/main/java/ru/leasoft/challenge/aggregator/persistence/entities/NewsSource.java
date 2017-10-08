@@ -49,4 +49,9 @@ public class NewsSource {
     public void setLocation(String location) {
         this.location = location;
     }
+
+    @Transient
+    public boolean isSameAs(NewsSource newsSource) {
+        return this.name.equals(newsSource.name) && this.location.equals(newsSource.location);
+    }
 }
