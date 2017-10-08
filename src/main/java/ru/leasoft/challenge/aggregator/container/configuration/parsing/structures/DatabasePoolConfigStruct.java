@@ -9,13 +9,15 @@ public class DatabasePoolConfigStruct implements ConfigComposer {
     public long maxIdle = 30 * 60;
     public long maxExcessIdle = 3 * 60;
     public long maxAge = 60 * 60;
+    public long increment = 1;
 
     @Override
     public void appendTo(Map<String, Object> configMap) {
-        configMap.put("database.pool.maxSize", maxSize);
-        configMap.put("database.pool.minSize", minSize);
-        configMap.put("database.pool.maxIdle", maxIdle);
-        configMap.put("database.pool.maxExcessIdle", maxExcessIdle);
-        configMap.put("database.pool.maxAge", maxAge);
+        insertTo(configMap,"database.pool.maxSize", maxSize);
+        insertTo(configMap,"database.pool.minSize", minSize);
+        insertTo(configMap,"database.pool.maxIdle", maxIdle);
+        insertTo(configMap,"database.pool.maxExcessIdle", maxExcessIdle);
+        insertTo(configMap,"database.pool.maxAge", maxAge);
+        insertTo(configMap,"database.pool.increment", increment);
     }
 }

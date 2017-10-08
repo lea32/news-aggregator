@@ -9,7 +9,7 @@ public class WebserverConfigStruct implements ConfigComposer {
 
     @Override
     public void appendTo(Map<String, Object> configMap) {
-        configMap.put("webserver.host", host);
-        configMap.put("webserver.port", port);
+        insertTo(configMap,"webserver.host", host);
+        insertTo(configMap,"webserver.port", port);
     }
 }

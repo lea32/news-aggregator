@@ -64,6 +64,8 @@ dependencies {
     compile group: 'org.hibernate', name: 'hibernate-c3p0', version: hibernateVersion
     compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: hibernateVersion
 
+    compile 'org.hibernate:hibernate-validator:6.0.2.Final'
+
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.33'
 
     compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.5'

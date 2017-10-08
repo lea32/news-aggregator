@@ -14,9 +14,9 @@ class DatabaseConfigStruct implements ConfigComposer {
 
     @Override
     void appendTo(Map<String, Object> configMap) {
-        configMap.put("database.url", url)
-        configMap.put("database.username", username)
-        configMap.put("database.password", password)
+        insertTo(configMap,"database.url", url)
+        insertTo(configMap,"database.username", username)
+        insertTo(configMap,"database.password", password)
 
         this.pool.appendTo(configMap)
     }
