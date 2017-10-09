@@ -69,6 +69,7 @@
           class="ru.leasoft.challenge.aggregator.engine.ParsingEngine"
           factory-method="buildEngine"
           init-method="start"
+          destroy-method="stop"
     />
 
 </beans>

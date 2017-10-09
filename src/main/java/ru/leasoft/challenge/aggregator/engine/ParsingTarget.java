@@ -10,6 +10,7 @@ public class ParsingTarget {
     private String name;
     private String parserName;
     private long pollingInterval;
+    private volatile boolean scheduled = false;
 
     private volatile long lastPollTime = 0;
 
@@ -32,20 +33,25 @@ public class ParsingTarget {
         return parserName;
     }
 
-    public long getPollingInterval() {
-        return pollingInterval;
+    public void executionFinished() {
+        synchronized (this) {
+            this.lastPollTime = System.currentTimeMillis();
+            this.scheduled = false;
+        }
     }
 
-    public long getLastPollTime() {
-        return lastPollTime;
-    }
+    public ParsingTask schedule(String parserCode) {
+        synchronized (this) {
+            if (scheduled || System.currentTimeMillis() - lastPollTime < pollingInterval) return null;
 
-    public synchronized void updatePollTime(long lastPollTime) {
-        this.lastPollTime = lastPollTime;
+            scheduled = true;
+        }
+
+        return new ParsingTask(this, parserCode);
     }
 
     public static ParsingTarget instantiateFromConfigStructure(ParsingTargetStruct pts) {
-        return new ParsingTarget(pts.url, pts.name, pts.parseWith, pts.pollingInterval);
+        return new ParsingTarget(pts.url, pts.name, pts.parseWith, pts.pollingInterval * 1000);
     }
 
     @Override

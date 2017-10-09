@@ -3,6 +3,7 @@ package ru.leasoft.challenge.aggregator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.leasoft.challenge.aggregator.container.Container;
+import ru.leasoft.challenge.aggregator.container.ContextAccessPoint;
 import ru.leasoft.challenge.aggregator.container.configuration.Configuration;
 import ru.leasoft.challenge.aggregator.container.configuration.utils.StartupConfigLocator;
 import static ru.leasoft.challenge.aggregator.container.utils.ExecutionFlow.awaitTerminationThenDo;
@@ -30,6 +31,7 @@ public class Aggregator {
 
     private static void stopContainer() {
         container.stop();
+        ContextAccessPoint.destroyApplicationContext();
     }
 
     private static void configureApplication(String[] args) {

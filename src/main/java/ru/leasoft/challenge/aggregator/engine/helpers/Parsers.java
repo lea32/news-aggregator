@@ -1,4 +1,4 @@
-package ru.leasoft.challenge.aggregator.engine;
+package ru.leasoft.challenge.aggregator.engine.helpers;
 
 import java.util.Collections;
 import java.util.Map;
