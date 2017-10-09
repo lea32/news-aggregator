@@ -68,7 +68,6 @@ public class Container {
         return new ListenerInfo(ContextLoaderListener.class, new ContextLoaderListenerInstanceFactory());
     }
 
-
     private HttpHandler makeStaticWebFilesHandler() {
         ClassPathResourceManager staticWebFilesManager = new ClassPathResourceManager(
                 Container.class.getClassLoader(),

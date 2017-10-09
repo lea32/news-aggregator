@@ -11,15 +11,21 @@ sourceSets.main.groovy.srcDirs += ["src/main/java"]
 
 task assembleDefaultConfig {
     def conf = file("$buildDir/conf")
+    def defaultParsersDir = file("$buildDir/conf/parsers")
     outputs.dir conf
     doLast {
         conf.mkdirs()
+        defaultParsersDir.mkdirs()
         copy {
             from 'default.config'
             into conf
             rename('default.config', 'aggregator')
         }
 
+        copy {
+            from 'parsers'
+            into defaultParsersDir
+        }
     }
 }
 

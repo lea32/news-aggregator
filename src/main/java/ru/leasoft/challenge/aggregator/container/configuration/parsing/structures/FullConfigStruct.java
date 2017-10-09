@@ -6,6 +6,7 @@ public class FullConfigStruct implements ConfigComposer {
 
     private DatabaseConfigStruct databaseConfig = new DatabaseConfigStruct();
     private WebserverConfigStruct webserverConfig = new WebserverConfigStruct();
+    private ParsersConfigStruct parsersStruct = new ParsersConfigStruct();
 
     public DatabaseConfigStruct getDatabaseConfig() {
         return databaseConfig;
@@ -13,6 +14,10 @@ public class FullConfigStruct implements ConfigComposer {
 
     public WebserverConfigStruct getWebserverConfig() {
         return webserverConfig;
+    }
+
+    public ParsersConfigStruct getParsersStruct() {
+        return parsersStruct;
     }
 
     @Override

@@ -36,6 +36,7 @@ public class ShellFactory {
         Map<String, Object> bindingsMap = new HashMap<>();
         bindingsMap.put("webserverConfig", configStruct.getWebserverConfig());
         bindingsMap.put("databaseConfig", configStruct.getDatabaseConfig());
+        bindingsMap.put("parsersStruct", configStruct.getParsersStruct());
 
         return new Binding(bindingsMap);
     }
