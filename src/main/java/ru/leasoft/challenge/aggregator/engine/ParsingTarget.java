@@ -33,6 +33,9 @@ public class ParsingTarget {
         return parserName;
     }
 
+    /**
+     * Marks this target as available for scheduling. Updates last poll time to current time
+     */
     public void executionFinished() {
         synchronized (this) {
             this.lastPollTime = System.currentTimeMillis();
@@ -40,6 +43,11 @@ public class ParsingTarget {
         }
     }
 
+    /**
+     * Marks this target as scheduled for execution and returns runnable parsing task
+     * @param parserCode parser script
+     * @return ParsingTask prepared for execution or null, if target cannot be scheduled
+     */
     public ParsingTask schedule(String parserCode) {
         synchronized (this) {
             if (scheduled || System.currentTimeMillis() - lastPollTime < pollingInterval) return null;

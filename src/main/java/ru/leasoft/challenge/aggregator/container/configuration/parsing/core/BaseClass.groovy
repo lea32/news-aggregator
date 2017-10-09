@@ -40,7 +40,7 @@ abstract class BaseClass extends Script {
         if (StringUtils.isBlank(pts.name)) throw new ScriptProcessingException("'target' directive must contain non-empty argument 'name'")
         if (StringUtils.isBlank(pts.url)) throw new ScriptProcessingException("'target' directive must contain non-empty argument 'url'")
         if (StringUtils.isBlank(pts.parseWith)) throw new ScriptProcessingException("'target' directive must contain non-empty argument 'parseWith'");
-        if (pts.pollingInterval <= 1 * minute) pts.pollingInterval = 5 * minute
+        if (pts.pollingInterval < minute / 2) pts.pollingInterval = 5 * minute
 
         this.binding.targetsList.add pts
     }

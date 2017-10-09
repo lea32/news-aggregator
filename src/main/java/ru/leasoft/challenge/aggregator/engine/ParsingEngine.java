@@ -15,7 +15,9 @@ public class ParsingEngine {
 
     private Parsers parsers;
     private List<ParsingTarget> targets = new ArrayList<>();
+
     private ThreadPoolExecutor executor;
+    private ParsingScheduler scheduler;
 
     private static final Logger log = LoggerFactory.getLogger(ParsingEngine.class);
 
@@ -53,9 +55,15 @@ public class ParsingEngine {
     public void start() {
         log.info("Parsing engine starts...");
         executor = initThreadExecutor();
+        scheduler = new ParsingScheduler(targets, executor, parsers);
+        scheduler.enable();
     }
 
     public void stop() {
+        if (scheduler != null) {
+            scheduler.disable();
+        }
+
         if (executor != null) {
             executor.shutdown();
             try {
@@ -69,7 +77,7 @@ public class ParsingEngine {
     private ThreadPoolExecutor initThreadExecutor() {
 
         return new ThreadPoolExecutor(
-                1,
+                2,
                 targets.size(),
                 10,
                 TimeUnit.MINUTES,

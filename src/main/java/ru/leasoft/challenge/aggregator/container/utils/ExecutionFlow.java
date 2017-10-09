@@ -26,8 +26,8 @@ public class ExecutionFlow {
 
     private static void registerShutdownHook(Runnable shutdownActions) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            lock.release();
             shutdownActions.run();
+            lock.release();
         }));
     }
 
