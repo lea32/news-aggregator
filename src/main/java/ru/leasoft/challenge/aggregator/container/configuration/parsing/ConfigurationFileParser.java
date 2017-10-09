@@ -5,7 +5,7 @@ import groovy.lang.MissingMethodException;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.leasoft.challenge.aggregator.container.configuration.parsing.core.ScriptProcessingException;
+import ru.leasoft.challenge.aggregator.container.configuration.parsing.core.exceptions.ScriptProcessingException;
 import ru.leasoft.challenge.aggregator.container.configuration.parsing.core.ShellFactory;
 import ru.leasoft.challenge.aggregator.container.configuration.parsing.structures.FullConfigStruct;
 

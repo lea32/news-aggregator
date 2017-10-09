@@ -5,12 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
 import ru.leasoft.challenge.aggregator.container.configuration.parsing.ConfigurationFileParser;
 import ru.leasoft.challenge.aggregator.container.configuration.parsing.structures.FullConfigStruct;
+import ru.leasoft.challenge.aggregator.container.configuration.parsing.structures.ParsingTargetStruct;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 public class Configuration extends PropertyPlaceholderConfigurer {
 
@@ -66,6 +65,14 @@ public class Configuration extends PropertyPlaceholderConfigurer {
 
     public String getDatabasePassword() {
         return config.getDatabaseConfig().password;
+    }
+
+    public List<ParsingTargetStruct> getTargetsConfiguration() {
+        return config.getTargetStructs();
+    }
+
+    public Map<String, String> getParsersMap() {
+        return config.getParsersStruct().getParsers();
     }
 
     @Override

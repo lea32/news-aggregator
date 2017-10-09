@@ -1,4 +1,4 @@
-package ru.leasoft.challenge.aggregator.container.configuration.parsing.core;
+package ru.leasoft.challenge.aggregator.container.configuration.parsing.core.exceptions;
 
 public class WrongParserFileException extends Exception {
 

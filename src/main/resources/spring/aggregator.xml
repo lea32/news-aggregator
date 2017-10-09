@@ -8,6 +8,8 @@
 
     <context:component-scan base-package="ru.leasoft.challenge.aggregator.persistence.dao.impl"/>
 
+    <bean class="ru.leasoft.challenge.aggregator.container.ContextAccessPoint"/>
+
     <bean class="ru.leasoft.challenge.aggregator.container.configuration.Configuration" factory-method="getInstance"/>
 
     <bean id="dbConnectionTester"
@@ -62,5 +64,11 @@
             </props>
         </property>
     </bean>
+
+    <bean id="parsingEngine"
+          class="ru.leasoft.challenge.aggregator.engine.ParsingEngine"
+          factory-method="buildEngine"
+          init-method="start"
+    />
 
 </beans>

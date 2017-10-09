@@ -95,7 +95,7 @@ public class Container {
 
     public void start() {
         server.start();
-        log.info("Server started at " + host + ":" + port);
+        log.info("News Aggregator server started at " + host + ":" + port);
     }
 
     public void stop() {

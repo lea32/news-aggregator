@@ -16,7 +16,7 @@ public class Aggregator {
     private static Container container;
 
     public static void main(String[] args) {
-        log.info("Aggregator starts...");
+        log.info("Aggregator initialization starts...");
 
         configureApplication(args);
         initAndStartContainer();
