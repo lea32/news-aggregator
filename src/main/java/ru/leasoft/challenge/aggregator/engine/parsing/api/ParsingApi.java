@@ -30,8 +30,8 @@ public class ParsingApi {
         repository.appendNews(title, content, newsSource);
     }
 
-    public XmlContent loadResource(String resourceUrl) throws IOException {
-        return new XmlContent(loader.get(resourceUrl));
+    public XmlElement loadResource(String resourceUrl) throws IOException {
+        return new XmlElement(loader.get(resourceUrl));
     }
 
 }

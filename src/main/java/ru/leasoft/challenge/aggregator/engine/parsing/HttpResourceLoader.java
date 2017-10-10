@@ -9,14 +9,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.io.StringReader;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +24,7 @@ public class HttpResourceLoader {
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.1";
 
     private interface ContentLoader {
-        Document load(String url) throws IOException;
+        String load(String url) throws IOException;
     }
 
     private Map<String, ContentLoader> contentByTypeLoaders = new HashMap<>();
@@ -42,10 +36,11 @@ public class HttpResourceLoader {
         httpClient = HttpClientBuilder.create().build();
 
         contentByTypeLoaders.put("application/rss+xml", this::loadXml);
+        contentByTypeLoaders.put("text/xml", this::loadXml);
         contentByTypeLoaders.put("text/html", this::loadHtml);
     }
 
-    public Document get(String url) throws IOException {
+    public String get(String url) throws IOException {
         HttpHead headRequest = new HttpHead(url);
         headRequest.setHeader("User-Agent", USER_AGENT);
 
@@ -72,7 +67,7 @@ public class HttpResourceLoader {
         throw new ParsingException("Unsupported content type " + contentType);
     }
 
-    private Document loadXml(String url) throws IOException {
+    private String loadXml(String url) throws IOException {
         HttpGet getRequest = new HttpGet(url);
         getRequest.setHeader("User-Agent", USER_AGENT);
 
@@ -83,23 +78,11 @@ public class HttpResourceLoader {
             content = IOUtils.toString(response.getEntity().getContent(), Charset.forName("UTF-8"));
         }
 
-        return asXmlDocument(content, url);
+        return content;
     }
 
-    private Document loadHtml(String url) {
+    private String loadHtml(String url) {
         throw new ParsingException("Not realized yet");
-    }
-
-    private Document asXmlDocument(String source, String url) throws IOException {
-        try {
-            return DocumentBuilderFactory.newInstance().newDocumentBuilder()
-                    .parse(new InputSource(new StringReader(source)));
-
-        } catch (ParserConfigurationException pex) {
-            throw new ParsingException("Xml parser exception: " + pex.getMessage());
-        } catch (SAXException saxEx) {
-            throw new ParsingException("Invalid document loaded for location: " + url);
-        }
     }
 
 }
