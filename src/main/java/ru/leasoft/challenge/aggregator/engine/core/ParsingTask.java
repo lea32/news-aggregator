@@ -1,4 +1,4 @@
-package ru.leasoft.challenge.aggregator.engine;
+package ru.leasoft.challenge.aggregator.engine.core;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
@@ -26,7 +26,11 @@ public class ParsingTask implements Runnable {
         try {
             new ParsingShellCommand().execute();
         } catch (Throwable t) {
-            log.warn("There was exception occurred while executing " + target.getName() + " task: " + t.getMessage());
+            if (t.getCause() != null) {
+                log.warn("There was exception occurred while executing " + target.getName() + " task: " + t.getCause().getMessage());
+            } else {
+                log.warn("Execution timeout [" + target.getName() + "]");
+            }
         } finally {
             target.executionFinished();
         }

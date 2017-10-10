@@ -77,8 +77,8 @@ public class NewsServiceTest {
         News news1 = TestEntityHelper.makePersistedNews(1, src1, sessionFactory);
         News news2 = TestEntityHelper.makeTransientNews(2);
 
-        Assert.assertTrue(newsService.isNewsExist(news1.getTitle(), news1.getContent()));
-        Assert.assertFalse(newsService.isNewsExist(news2.getTitle(), news2.getContent()));
+        Assert.assertTrue(newsService.isNewsExist(news1.getTitle(), news1.getContent(), src1));
+        Assert.assertFalse(newsService.isNewsExist(news2.getTitle(), news2.getContent(), src1));
     }
 
 }

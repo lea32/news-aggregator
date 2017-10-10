@@ -8,5 +8,6 @@ public interface NewsSourcesService {
 
     List<NewsSource> getAll();
     long create(NewsSource source);
+    NewsSource load(String name, String url);
 
 }

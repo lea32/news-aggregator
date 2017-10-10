@@ -2,6 +2,8 @@ package ru.leasoft.challenge.aggregator.engine;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.leasoft.challenge.aggregator.engine.core.ParsingTarget;
+import ru.leasoft.challenge.aggregator.engine.core.ParsingTask;
 import ru.leasoft.challenge.aggregator.engine.helpers.Parsers;
 
 import java.util.List;

@@ -3,8 +3,7 @@ package ru.leasoft.challenge.aggregator.engine.parsing;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 import org.codehaus.groovy.control.CompilerConfiguration;
-import ru.leasoft.challenge.aggregator.container.configuration.parsing.core.BaseClass;
-import ru.leasoft.challenge.aggregator.engine.ParsingTarget;
+import ru.leasoft.challenge.aggregator.engine.core.ParsingTarget;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +14,7 @@ public class ParsingShellFactory {
         Binding binding = makeBinding(target);
 
         CompilerConfiguration compiler = new CompilerConfiguration();
-        compiler.setScriptBaseClass(BaseClass.class.getName());
+        compiler.setScriptBaseClass(BaseParsingScript.class.getName());
 
         return new GroovyShell(binding, compiler);
     }
@@ -23,6 +22,9 @@ public class ParsingShellFactory {
     private static Binding makeBinding(ParsingTarget target) {
         Map<String, Object> bindingsMap = new HashMap<>();
         bindingsMap.put("baseUrl", target.getUrl());
+
+        ParsingApi api = new ParsingApi();
+        bindingsMap.put("api", api);
 
         return new Binding(bindingsMap);
     }

@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.leasoft.challenge.aggregator.container.configuration.Configuration;
 import ru.leasoft.challenge.aggregator.container.configuration.parsing.structures.ParsingTargetStruct;
+import ru.leasoft.challenge.aggregator.engine.core.ParsingTarget;
 import ru.leasoft.challenge.aggregator.engine.helpers.Parsers;
 
 import java.util.ArrayList;

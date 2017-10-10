@@ -25,11 +25,12 @@ public class NewsServiceProvider implements NewsService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isNewsExist(String title, String content) {
+    public boolean isNewsExist(String title, String content, NewsSource fromSource) {
         Query<Long> query = sessionFactory.getCurrentSession().createQuery(
-                "select count(n) from News n where n.title = :title and n.content = :content",
+                "select count(n) from News n where n.newsSource = :fromSource and n.title = :title and n.content = :content",
                 Long.class
         );
+        query.setParameter("fromSource", fromSource);
         query.setParameter("title", title);
         query.setParameter("content", content);
         return query.uniqueResult() > 0;

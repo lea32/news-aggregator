@@ -8,7 +8,7 @@ import java.util.List;
 public interface NewsService {
 
     List<News> getAll();
-    boolean isNewsExist(String title, String content);
+    boolean isNewsExist(String title, String content, NewsSource fromSource);
     long create(News news);
     List<News> getNewsForSource(NewsSource source);
 
