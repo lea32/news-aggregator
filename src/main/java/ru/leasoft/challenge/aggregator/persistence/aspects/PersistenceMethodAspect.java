@@ -24,11 +24,13 @@ public class PersistenceMethodAspect {
     @Around(value = "publicMethodCall() && annotated()")
     public Object persistenceMethodExecution(ProceedingJoinPoint pjp) throws Throwable {
         try {
+
             return pjp.proceed();
 
         } catch (Exception e) {
             Logger log = LoggerFactory.getLogger(pjp.getTarget().getClass());
             log.error(e.toString());
+            e.printStackTrace();
             throw new PersistenceLevelException(e);
         }
     }

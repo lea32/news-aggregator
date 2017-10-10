@@ -12,7 +12,7 @@
     <context:annotation-config/>
     <aop:aspectj-autoproxy/>
 
-    <context:component-scan base-package="ru.leasoft.challenge.aggregator.persistence.*"/>
+    <context:component-scan base-package="ru.leasoft.challenge.aggregator.persistence"/>
 
     <bean class="ru.leasoft.challenge.aggregator.container.ContextAccessPoint"/>
 

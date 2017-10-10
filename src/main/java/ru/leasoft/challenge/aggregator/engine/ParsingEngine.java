@@ -76,10 +76,14 @@ public class ParsingEngine {
     }
 
     private ThreadPoolExecutor initThreadExecutor() {
+        int nThreads = Runtime.getRuntime().availableProcessors();
+        if (nThreads < 2) {
+            nThreads = 2;
+        }
 
         return new ThreadPoolExecutor(
                 2,
-                targets.size(),
+                nThreads,
                 10,
                 TimeUnit.MINUTES,
                 new LinkedBlockingQueue<>(targets.size() + 1),

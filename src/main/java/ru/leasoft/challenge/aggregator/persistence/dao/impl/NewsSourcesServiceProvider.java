@@ -24,8 +24,8 @@ public class NewsSourcesServiceProvider implements NewsSourcesService {
         return query.list();
     }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public long create(NewsSource source) {
+    @Transactional
+    public synchronized long create(NewsSource source) {
         if (load(source.getName(), source.getLocation()) == null) {
             return (long) sessionFactory.getCurrentSession().save(source);
         } else return 0;
