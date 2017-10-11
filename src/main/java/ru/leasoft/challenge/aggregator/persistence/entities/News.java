@@ -1,10 +1,14 @@
 package ru.leasoft.challenge.aggregator.persistence.entities;
 
 import org.hibernate.annotations.CreationTimestamp;
+import ru.leasoft.challenge.aggregator.web.dto.NewsDto;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Entity
@@ -15,6 +19,8 @@ public class News {
     public static final int MAX_TITLE_LENGTH = 32000; //less than TEXT / 2
     public static final int MIN_CONTENT_LENGTH = 1;
     public static final int MAX_CONTENT_LENGTH = 8000000; //less than MEDIUMTEXT / 2
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd MM yyyy");
 
     private long id;
     @Size(min = MIN_TITLE_LENGTH, max = MAX_TITLE_LENGTH)
@@ -82,5 +88,15 @@ public class News {
                 news.newsSource == null :
                 news.newsSource != null && this.newsSource.isSameAs(news.newsSource);
         return this.title.equals(news.title) && this.content.equals(news.content) && srcIsSame;
+    }
+
+    @Transient
+    public static NewsDto packToDto(News news) {
+        NewsDto dto = new NewsDto();
+        dto.setTitle(news.title);
+        dto.setContent(news.content);
+        dto.setSource(news.newsSource.toString());
+        dto.setReceivingDate(LocalDateTime.ofInstant(news.appendTimestamp.toInstant(), ZoneId.systemDefault()).format(formatter));
+        return dto;
     }
 }

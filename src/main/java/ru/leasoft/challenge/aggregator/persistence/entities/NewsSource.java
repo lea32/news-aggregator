@@ -54,4 +54,9 @@ public class NewsSource {
     public boolean isSameAs(NewsSource newsSource) {
         return this.name.equals(newsSource.name) && this.location.equals(newsSource.location);
     }
+
+    @Override
+    public String toString() {
+        return name + "(" + location + ")";
+    }
 }

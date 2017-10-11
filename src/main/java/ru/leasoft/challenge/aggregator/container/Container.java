@@ -3,6 +3,7 @@ package ru.leasoft.challenge.aggregator.container;
 import io.undertow.Handlers;
 import io.undertow.Undertow;
 import io.undertow.server.HttpHandler;
+import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.cache.DirectBufferCache;
 import io.undertow.server.handlers.resource.CachingResourceManager;
 import io.undertow.server.handlers.resource.ClassPathResourceManager;
@@ -11,11 +12,16 @@ import io.undertow.servlet.Servlets;
 import io.undertow.servlet.api.DeploymentInfo;
 import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.ListenerInfo;
+import io.undertow.servlet.api.ServletInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ContextLoaderListener;
+import org.springframework.web.servlet.DispatcherServlet;
 import ru.leasoft.challenge.aggregator.container.configuration.Configuration;
 import ru.leasoft.challenge.aggregator.container.configuration.utils.ContextLoaderListenerInstanceFactory;
+import ru.leasoft.challenge.aggregator.container.configuration.utils.DispatcherServletInstanceFactory;
+
+import javax.servlet.ServletException;
 
 public class Container {
 
@@ -35,16 +41,23 @@ public class Container {
 
     private static final Logger log = LoggerFactory.getLogger(Container.class);
 
-    private Container(String host, int port) {
+    private Container(String host, int port) throws ServletException {
         this.host = host;
         this.port = port;
 
         DeploymentManager deploymentManager = passDeploymentInfo();
         deploymentManager.deploy();
+        HttpHandler servletsHandled = deploymentManager.start();
+
+        PathHandler fullHandler = Handlers
+                .path(buildStaticWebFilesHandler())
+                .addPrefixPath("/api", servletsHandled);
+
+        PathHandler wut = Handlers.path(Handlers.redirect("/")).addPrefixPath("/", servletsHandled);
 
         server = Undertow.builder()
                 .addHttpListener(port, host)
-                .setHandler(makeStaticWebFilesHandler())
+                .setHandler(wut)
                 .build();
     }
 
@@ -59,6 +72,7 @@ public class Container {
                 .setResourceManager(commonResourceManager)
                 .addListener(springContextLoaderListener)
                 .addInitParameter("contextConfigLocation", "spring/aggregator.xml")
+                .addServlet(buildDispatcherServlet())
                 .setDefaultSessionTimeout(SESSION_TIMEOUT);
 
         return Servlets.defaultContainer().addDeployment(deployment);
@@ -68,7 +82,7 @@ public class Container {
         return new ListenerInfo(ContextLoaderListener.class, new ContextLoaderListenerInstanceFactory());
     }
 
-    private HttpHandler makeStaticWebFilesHandler() {
+    private HttpHandler buildStaticWebFilesHandler() {
         ClassPathResourceManager staticWebFilesManager = new ClassPathResourceManager(
                 Container.class.getClassLoader(),
                 STATIC_WEB_FILES_PATH
@@ -85,12 +99,28 @@ public class Container {
         return Handlers.resource(cachingManager).addWelcomeFiles(WELCOME);
     }
 
+    private ServletInfo buildDispatcherServlet() {
+        ServletInfo servletInfo = Servlets
+                .servlet("APIDispatcher", DispatcherServlet.class, new DispatcherServletInstanceFactory())
+                .setLoadOnStartup(1);
+
+        servletInfo.setAsyncSupported(true);
+        servletInfo.addMapping("/api/*");
+        servletInfo.addInitParam("contextConfigLocation", "spring/aggregator-api.xml");
+        return servletInfo;
+    }
+
     public static Container buildContainer() {
         Configuration config = Configuration.getInstance();
-        return new Container(
-                config.getWebserverHost(),
-                config.getWebserverPort()
-        );
+        try {
+            return new Container(
+                    config.getWebserverHost(),
+                    config.getWebserverPort()
+            );
+        } catch (ServletException ex) {
+            log.error("Servlet creation exception: " + ex.getMessage());
+            throw new Error(ex);
+        }
     }
 
     public void start() {
