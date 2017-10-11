@@ -49,4 +49,12 @@ public class NewsRepositoryAccessService implements NewsRepositoryAccess {
                 .map(News::packToDto)
                 .collect(Collectors.toList()));
     }
+
+    @Override
+    @Async("webRequestsExecutor")
+    public void suggest(CompletableFuture<List<String>> result, String propose) {
+        if (result.isDone()) return;
+
+        result.complete(newsService.suggest(propose));
+    }
 }

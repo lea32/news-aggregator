@@ -13,4 +13,5 @@ public interface NewsRepositoryAccess {
 
     void searchInTitlePaginatedAsync(CompletableFuture<List<NewsDto>> result, String queryString, int from, int count);
 
+    void suggest(CompletableFuture<List<String>> result, String propose);
 }

@@ -1,6 +1,8 @@
 package ru.leasoft.challenge.aggregator.persistence.entities;
 
 import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.miscellaneous.WordDelimiterFilterFactory;
+import org.apache.lucene.analysis.ngram.NGramFilterFactory;
 import org.apache.lucene.analysis.snowball.SnowballPorterFilterFactory;
 import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.hibernate.annotations.CreationTimestamp;
@@ -20,14 +22,28 @@ import java.util.Date;
 @Entity
 @Table(name = "news")
 @Indexed
-@AnalyzerDef(name = "ruAnalyzer",
-        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
-        filters = {
-                @TokenFilterDef(factory = LowerCaseFilterFactory.class),
-                @TokenFilterDef(factory = SnowballPorterFilterFactory.class, params = {
-                        @Parameter(name = "language", value = "Russian")
-                })
-        })
+@AnalyzerDefs({
+        @AnalyzerDef(name = "ruAnalyzer",
+                tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+                filters = {
+                        @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                        @TokenFilterDef(factory = SnowballPorterFilterFactory.class, params = {
+                                @Parameter(name = "language", value = "Russian")
+                        })
+                }),
+
+        @AnalyzerDef(name = "suggestionNGram",
+                tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+                filters = {
+                        @TokenFilterDef(factory = WordDelimiterFilterFactory.class),
+                        @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                        @TokenFilterDef(factory = NGramFilterFactory.class, params = {
+                                @Parameter(name = "minGramSize", value = "3"),
+                                @Parameter(name = "maxGramSize", value = "5") })
+                }
+
+        )
+})
 public class News {
 
     public static final int MIN_TITLE_LENGTH = 1;
@@ -59,8 +75,10 @@ public class News {
     }
 
     @Column(name = "TITLE")
-    @Field(index = Index.YES, analyze = Analyze.YES)
-    @Analyzer(definition = "ruAnalyzer")
+    @Fields({
+            @Field(name = "search", index = Index.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "ruAnalyzer")),
+            @Field(name = "suggestion", index = Index.YES, analyze = Analyze.YES, analyzer = @Analyzer(definition = "suggestionNGram"))
+    })
     public String getTitle() {
         return title;
     }

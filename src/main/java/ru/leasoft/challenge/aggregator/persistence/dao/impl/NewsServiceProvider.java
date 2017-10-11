@@ -14,6 +14,7 @@ import ru.leasoft.challenge.aggregator.persistence.entities.NewsSource;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class NewsServiceProvider implements NewsService {
@@ -78,12 +79,29 @@ public class NewsServiceProvider implements NewsService {
         QueryBuilder qb = ftSession.getSearchFactory().buildQueryBuilder().forEntity(News.class).get();
         org.apache.lucene.search.Query luceneQuery =
                 qb.keyword()
-                  .onField("title")
+                  .onField("search")
                   .matching(queryString)
                   .createQuery();
         FullTextQuery query = ftSession.createFullTextQuery(luceneQuery, News.class)
                 .setFirstResult(from)
                 .setMaxResults(count);
         return query.list();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    public List<String> suggest(String propose) {
+        FullTextSession ftSession = Search.getFullTextSession(sessionFactory.getCurrentSession());
+        QueryBuilder qb = ftSession.getSearchFactory().buildQueryBuilder().forEntity(News.class).get();
+        org.apache.lucene.search.Query luceneQuery =
+                qb.phrase()
+                  .onField("suggestion")
+                  .sentence(propose)
+                  .createQuery();
+
+        FullTextQuery query = ftSession.createFullTextQuery(luceneQuery, News.class).setMaxResults(5);
+        List<News> news = query.list();
+        return news.stream().map(News::getTitle).collect(Collectors.toList());
     }
 }

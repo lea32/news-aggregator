@@ -13,5 +13,6 @@ public interface NewsService {
     long create(News news);
     List<News> getNewsForSource(NewsSource source);
     List<News> searchInTitlePaginated(String queryString, int from, int count);
+    List<String> suggest(String propose);
 
 }

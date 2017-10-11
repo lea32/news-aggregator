@@ -45,4 +45,21 @@ public class NewsController {
         return future;
     }
 
+    @RequestMapping(value = "/api/suggest", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public Future<List<String>> suggestAsync(@RequestParam String propose) {
+        if (propose == null || propose.length() <= 1 || propose.length() > 5)
+            throw new BadRequestException();
+
+        CompletableFuture<List<String>> future = new CompletableFuture<>();
+        service.suggest(future, propose);
+        return future;
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public void handle(Exception e) {
+        //nothing to do
+    }
+
 }
