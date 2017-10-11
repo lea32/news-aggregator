@@ -1,1 +1,0 @@
-loadResource(baseUrl).findAll('.//article')

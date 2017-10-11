@@ -1,5 +1,6 @@
 package ru.leasoft.challenge.aggregator.persistence;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.leasoft.challenge.aggregator.engine.helpers.NewsRepository;
@@ -24,6 +25,14 @@ public class NewsRepositoryService implements NewsRepository {
     @Override
     @PersistenceMethod
     public void appendNews(String title, String content, NewsSource source) {
+        if (StringUtils.isBlank(content)) return;
+        if (StringUtils.isBlank(title)) {
+            title = StringUtils.abbreviate(content, 50);
+        }
+
+        title = StringUtils.abbreviate(title, News.MAX_TITLE_LENGTH).replaceAll("[^\\u0000-\\uFFFF]", ""); //just believe, we must do it for the great mySql justice ;))
+        content = StringUtils.abbreviate(content, News.MAX_CONTENT_LENGTH).replaceAll("[^\\u0000-\\uFFFF]", "");
+
         boolean newsExist = newsService.isNewsExist(title, content, source);
         if (!newsExist) {
             News news = new News();

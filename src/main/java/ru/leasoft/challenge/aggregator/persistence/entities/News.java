@@ -13,13 +13,13 @@ public class News {
 
     public static final int MIN_TITLE_LENGTH = 1;
     public static final int MAX_TITLE_LENGTH = 32000; //less than TEXT / 2
-    public static final int MIN_LOCATION_LENGTH = 1;
-    public static final int MAX_LOCATION_LENGTH = 8000000; //less than MEDIUMTEXT / 2
+    public static final int MIN_CONTENT_LENGTH = 1;
+    public static final int MAX_CONTENT_LENGTH = 8000000; //less than MEDIUMTEXT / 2
 
     private long id;
     @Size(min = MIN_TITLE_LENGTH, max = MAX_TITLE_LENGTH)
     private String title;
-    @Size(min = MIN_LOCATION_LENGTH, max = MAX_LOCATION_LENGTH)
+    @Size(min = MIN_CONTENT_LENGTH, max = MAX_CONTENT_LENGTH)
     private String content;
     private Date appendTimestamp;
 

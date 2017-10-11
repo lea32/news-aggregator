@@ -28,6 +28,7 @@ public class ParsingTask implements Runnable {
         } catch (Throwable t) {
             if (t.getCause() != null) {
                 log.warn("There was exception occurred while executing " + target.getName() + " task: " + t.getCause().getMessage());
+                t.getCause().printStackTrace(); //TODO debug flag
             } else {
                 log.warn("Execution timeout [" + target.getName() + "]");
             }
