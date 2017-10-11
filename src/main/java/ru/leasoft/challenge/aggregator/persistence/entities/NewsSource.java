@@ -57,6 +57,6 @@ public class NewsSource {
 
     @Override
     public String toString() {
-        return name + "(" + location + ")";
+        return name + " (" + location + ")";
     }
 }

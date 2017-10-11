@@ -1,6 +1,12 @@
 package ru.leasoft.challenge.aggregator.persistence.entities;
 
+import org.apache.lucene.analysis.core.LowerCaseFilterFactory;
+import org.apache.lucene.analysis.snowball.SnowballPorterFilterFactory;
+import org.apache.lucene.analysis.standard.StandardTokenizerFactory;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
+import org.hibernate.search.annotations.Parameter;
 import ru.leasoft.challenge.aggregator.web.dto.NewsDto;
 
 import javax.persistence.*;
@@ -13,6 +19,15 @@ import java.util.Date;
 
 @Entity
 @Table(name = "news")
+@Indexed
+@AnalyzerDef(name = "ruAnalyzer",
+        tokenizer = @TokenizerDef(factory = StandardTokenizerFactory.class),
+        filters = {
+                @TokenFilterDef(factory = LowerCaseFilterFactory.class),
+                @TokenFilterDef(factory = SnowballPorterFilterFactory.class, params = {
+                        @Parameter(name = "language", value = "Russian")
+                })
+        })
 public class News {
 
     public static final int MIN_TITLE_LENGTH = 1;
@@ -20,7 +35,7 @@ public class News {
     public static final int MIN_CONTENT_LENGTH = 1;
     public static final int MAX_CONTENT_LENGTH = 8000000; //less than MEDIUMTEXT / 2
 
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd MM yyyy");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd.MM.yyyy");
 
     private long id;
     @Size(min = MIN_TITLE_LENGTH, max = MAX_TITLE_LENGTH)
@@ -44,6 +59,8 @@ public class News {
     }
 
     @Column(name = "TITLE")
+    @Field(index = Index.YES, analyze = Analyze.YES)
+    @Analyzer(definition = "ruAnalyzer")
     public String getTitle() {
         return title;
     }

@@ -11,6 +11,9 @@ public class FullConfigStruct implements ConfigComposer {
     private ParsersConfigStruct parsersStruct = new ParsersConfigStruct();
     private List<ParsingTargetStruct> targetStructs = new ArrayList<>();
 
+    private String tempDir;
+
+
     public DatabaseConfigStruct getDatabaseConfig() {
         return databaseConfig;
     }
@@ -27,9 +30,18 @@ public class FullConfigStruct implements ConfigComposer {
         return targetStructs;
     }
 
+    public String getTempDir() {
+        return tempDir;
+    }
+
+    public void setTempDir(String tempDir) {
+        this.tempDir = tempDir;
+    }
+
     @Override
     public void appendTo(Map<String, Object> configMap) {
         databaseConfig.appendTo(configMap);
         webserverConfig.appendTo(configMap);
+        insertTo(configMap, "search.tempDir", tempDir);
     }
 }

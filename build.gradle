@@ -35,6 +35,12 @@ distributions {
             from(assembleDefaultConfig) {
                 into "conf"
             }
+
+            def tempDirBase = new File('/tmp/news-aggregator-dummy')
+            tempDirBase.mkdirs()
+            def tempDir = new File(tempDirBase.absolutePath + '/tmp')
+            tempDir.mkdirs()
+            from {tempDirBase}
         }
     }
 }
@@ -69,6 +75,7 @@ dependencies {
     compile group: 'org.hibernate', name: 'hibernate-core', version: hibernateVersion
     compile group: 'org.hibernate', name: 'hibernate-c3p0', version: hibernateVersion
     compile group: 'org.hibernate', name: 'hibernate-entitymanager', version: hibernateVersion
+    compile 'org.hibernate:hibernate-search-orm:5.8.1.Final'
 
     compile 'org.hibernate:hibernate-validator:6.0.2.Final'
     compile 'org.glassfish:javax.el:3.0.1-b08'

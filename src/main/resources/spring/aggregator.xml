@@ -67,6 +67,9 @@
                 <prop key="hibernate.c3p0.unreturnedConnectionTimeout">120</prop>
                 <prop key="hibernate.c3p0.debugUnreturnedConnectionStackTraces">true</prop>
 
+                <prop key="hibernate.search.default.directory_provider">filesystem</prop>
+                <prop key="hibernate.search.default.indexBase">${search.tempDir}/lucene/indexes</prop>
+
                 <prop key="hibernate.show_sql">false</prop>
                 <prop key="hibernate.generate_statistics">false</prop>
                 <prop key="hibernate.format_sql">true</prop>

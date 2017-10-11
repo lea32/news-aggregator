@@ -38,6 +38,7 @@ public class ShellFactory {
         bindingsMap.put("databaseConfig", configStruct.getDatabaseConfig());
         bindingsMap.put("parsersStruct", configStruct.getParsersStruct());
         bindingsMap.put("targetsList", configStruct.getTargetStructs());
+        bindingsMap.put("fullConfig", configStruct);
 
         return new Binding(bindingsMap);
     }

@@ -1,14 +1,16 @@
 package ru.leasoft.challenge.aggregator.web;
 
-import org.springframework.web.context.request.async.DeferredResult;
 import ru.leasoft.challenge.aggregator.web.dto.NewsDto;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface NewsRepositoryAccess {
 
-    List<NewsDto> loadNews();
+    List<NewsDto> loadNews(int from, int count);
 
-    void loadNewsAsync(DeferredResult<List<NewsDto>> result);
+    void loadNewsAsync(CompletableFuture<List<NewsDto>> result, int from, int count);
+
+    void searchInTitlePaginatedAsync(CompletableFuture<List<NewsDto>> result, String queryString, int from, int count);
 
 }

@@ -1,10 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Аггрегатор новостей</title>
+
+    <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/news.js"></script>
+
+    <link rel="stylesheet" href="css/news.css"/>
 </head>
+
 <body>
-    <h1>Test</h1>
+<header>
+    <h1>Аггрегатор новостей</h1>
+
+    <div>
+        <button onclick="go_back()">Назад</button>
+        <button onclick="update()">Обновить (Страница&nbsp;<span id="pageNumber"></span>)</button>
+        <button onclick="go_next()">Вперед</button>
+    </div>
+
+</header>
+
+<div id="news">
+
+</div>
+
 </body>
 </html>

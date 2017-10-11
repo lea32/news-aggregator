@@ -49,15 +49,15 @@ public class Container {
         deploymentManager.deploy();
         HttpHandler servletsHandled = deploymentManager.start();
 
-        PathHandler fullHandler = Handlers
-                .path(buildStaticWebFilesHandler())
-                .addPrefixPath("/api", servletsHandled);
+        PathHandler api = Handlers.path(Handlers.redirect("/")).addPrefixPath("/", servletsHandled);
 
-        PathHandler wut = Handlers.path(Handlers.redirect("/")).addPrefixPath("/", servletsHandled);
+        PathHandler fullHandler = Handlers
+                .path(buildStaticWebFilesHandler()).addPrefixPath("/api", api);
+
 
         server = Undertow.builder()
                 .addHttpListener(port, host)
-                .setHandler(wut)
+                .setHandler(fullHandler)
                 .build();
     }
 
@@ -105,7 +105,7 @@ public class Container {
                 .setLoadOnStartup(1);
 
         servletInfo.setAsyncSupported(true);
-        servletInfo.addMapping("/api/*");
+        servletInfo.addMapping("/*");
         servletInfo.addInitParam("contextConfigLocation", "spring/aggregator-api.xml");
         return servletInfo;
     }

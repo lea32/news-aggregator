@@ -45,4 +45,8 @@ abstract class BaseClass extends Script {
         this.binding.targetsList.add pts
     }
 
+    void tempDir(String dir) {
+        this.binding.fullConfig.tempDir = dir
+    }
+
 }
