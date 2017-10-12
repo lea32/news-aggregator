@@ -49,4 +49,8 @@ abstract class BaseClass extends Script {
         this.binding.fullConfig.tempDir = dir
     }
 
+    void debugMode(boolean isDebugModeEnabled) {
+        this.binding.fullConfig.setDebugMode(isDebugModeEnabled)
+    }
+
 }

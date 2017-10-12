@@ -6,6 +6,7 @@ import com.netflix.hystrix.HystrixCommandProperties;
 import groovy.lang.GroovyShell;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.leasoft.challenge.aggregator.container.configuration.Configuration;
 import ru.leasoft.challenge.aggregator.engine.parsing.ParsingShellFactory;
 
 public class ParsingTask implements Runnable {
@@ -15,6 +16,8 @@ public class ParsingTask implements Runnable {
 
     private static final Logger log = LoggerFactory.getLogger(ParsingTask.class);
     private static final int MAX_EXECUTION_TIME = 1000 * 60; //1 minute for script to finish execution
+
+    private boolean debugMode = Configuration.getInstance().isDebug();
 
     public ParsingTask(ParsingTarget target, String scriptCode) {
         this.scriptCode = scriptCode;
@@ -28,7 +31,9 @@ public class ParsingTask implements Runnable {
         } catch (Throwable t) {
             if (t.getCause() != null) {
                 log.warn("There was exception occurred while executing " + target.getName() + " task: " + t.getCause().getMessage());
-                t.getCause().printStackTrace(); //TODO debug flag
+                if (debugMode) {
+                    t.getCause().printStackTrace();
+                }
             } else {
                 log.warn("Execution timeout [" + target.getName() + "]");
             }

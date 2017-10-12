@@ -75,6 +75,10 @@ public class Configuration extends PropertyPlaceholderConfigurer {
         return config.getParsersStruct().getParsers();
     }
 
+    public boolean isDebug() {
+        return config.isDebugMode();
+    }
+
     @Override
     protected void loadProperties(Properties props) throws IOException {
         super.loadProperties(props);

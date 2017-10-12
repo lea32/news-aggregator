@@ -8,6 +8,7 @@ import org.hibernate.search.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.leasoft.challenge.aggregator.container.configuration.Configuration;
 import ru.leasoft.challenge.aggregator.persistence.dao.NewsService;
 import ru.leasoft.challenge.aggregator.persistence.entities.News;
 import ru.leasoft.challenge.aggregator.persistence.entities.NewsSource;
@@ -22,6 +23,8 @@ public class NewsServiceProvider implements NewsService {
     @Resource(name = "sessionFactory")
     private SessionFactory sessionFactory;
 
+    private boolean debugMode = Configuration.getInstance().isDebug();
+
     @Transactional(readOnly = true)
     public List<News> getAll() {
         Query<News> query = sessionFactory.getCurrentSession().createQuery("from News n", News.class);
@@ -31,6 +34,8 @@ public class NewsServiceProvider implements NewsService {
     @Override
     @Transactional(readOnly = true)
     public boolean isNewsExist(String title, String content, NewsSource fromSource) {
+        if (debugMode) return false;
+
         Query<Long> query = sessionFactory.getCurrentSession().createQuery(
                 "select count(n) from News n where n.newsSource = :fromSource and n.title = :title and n.content = :content",
                 Long.class

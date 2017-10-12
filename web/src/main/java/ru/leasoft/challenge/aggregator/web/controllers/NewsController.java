@@ -8,6 +8,7 @@ import ru.leasoft.challenge.aggregator.web.dto.BadRequestException;
 import ru.leasoft.challenge.aggregator.web.dto.NewsDto;
 import ru.leasoft.challenge.aggregator.web.dto.SuggestionsDto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -49,10 +50,15 @@ public class NewsController {
     @RequestMapping(value = "/api/suggest", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
     public Future<SuggestionsDto> suggestAsync(@RequestParam String propose) {
-        if (propose == null || propose.length() <= 1 || propose.length() > 5)
-            throw new BadRequestException();
-
         CompletableFuture<SuggestionsDto> future = new CompletableFuture<>();
+
+        if (propose == null || propose.length() <= 1 || propose.length() > 5) {
+            SuggestionsDto dto = new SuggestionsDto();
+            dto.setSuggestions(new ArrayList<>());
+            future.complete(dto);
+            return future;
+        }
+
         service.suggest(future, propose);
         return future;
     }

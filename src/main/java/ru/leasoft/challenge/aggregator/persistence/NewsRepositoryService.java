@@ -1,8 +1,11 @@
 package ru.leasoft.challenge.aggregator.persistence;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.leasoft.challenge.aggregator.container.configuration.Configuration;
 import ru.leasoft.challenge.aggregator.engine.helpers.NewsRepository;
 import ru.leasoft.challenge.aggregator.persistence.aspects.PersistenceMethod;
 import ru.leasoft.challenge.aggregator.persistence.dao.NewsService;
@@ -16,6 +19,10 @@ public class NewsRepositoryService implements NewsRepository {
     private NewsService newsService;
     private NewsSourcesService newsSourcesService;
 
+    private boolean debugMode = Configuration.getInstance().isDebug();
+
+    private static final Logger log = LoggerFactory.getLogger(NewsRepositoryService.class);
+
     @Autowired
     public NewsRepositoryService(NewsService newsService, NewsSourcesService newsSourcesService) {
         this.newsService = newsService;
@@ -25,6 +32,11 @@ public class NewsRepositoryService implements NewsRepository {
     @Override
     @PersistenceMethod
     public void appendNews(String title, String content, NewsSource source) {
+        if (debugMode) {
+            log.info("[title: " + title + "], [content: " + content);
+            return;
+        }
+
         if (StringUtils.isBlank(content)) return;
         if (StringUtils.isBlank(title)) {
             title = StringUtils.abbreviate(content, 50);
@@ -46,6 +58,13 @@ public class NewsRepositoryService implements NewsRepository {
     @Override
     @PersistenceMethod
     public NewsSource loadNewsSourceOrCreateIfNotExist(String name, String url) {
+        if (debugMode) {
+            NewsSource fakeSource = new NewsSource();
+            fakeSource.setName(name);
+            fakeSource.setLocation(url);
+            return fakeSource;
+        }
+
         NewsSource source = newsSourcesService.load(name, url);
         if (source == null) {
             source = new NewsSource();

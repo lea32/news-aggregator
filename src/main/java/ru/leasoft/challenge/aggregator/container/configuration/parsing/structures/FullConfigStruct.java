@@ -12,6 +12,7 @@ public class FullConfigStruct implements ConfigComposer {
     private List<ParsingTargetStruct> targetStructs = new ArrayList<>();
 
     private String tempDir;
+    private boolean debugMode;
 
 
     public DatabaseConfigStruct getDatabaseConfig() {
@@ -36,6 +37,14 @@ public class FullConfigStruct implements ConfigComposer {
 
     public void setTempDir(String tempDir) {
         this.tempDir = tempDir;
+    }
+
+    public boolean isDebugMode() {
+        return debugMode;
+    }
+
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
     }
 
     @Override

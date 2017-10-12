@@ -1,18 +1,30 @@
 
 $(function () {
-    $('#autocomplete').autocomplete({
+    var suggestionsBox = $('#autocomplete');
+
+    suggestionsBox.autocomplete({
         serviceUrl: '/api/suggest',
         paramName: 'propose',
         minChars: 3,
         onSelect: function (suggestion) {
-            console.log(suggestion.value);
+            query.queryString = suggestion.value;
+            query.exactly = true;
+            update();
         }
+    });
+
+    suggestionsBox.change(function() {
+        query.queryString = suggestionsBox.val();
+        query.exactly = false;
+        update();
     });
 });
 
-
-
 var currentPage = 0;
+var query = {
+    queryString : '',
+    exactly : false
+};
 go_next();
 
 
@@ -35,8 +47,13 @@ function update() {
 }
 
 function request() {
+    var request = (query.queryString.length > 0) ?
+        "/api/search?query=" + query.queryStringПутин
+        + "&page=" + currentPage :
+        "/api/news/?page=" + currentPage;
+
     $.get(
-        "/api/news/?page=" + currentPage,
+        request,
         function (data) {
             onLoad(data);
         }
@@ -56,14 +73,16 @@ function onLoad(data) {
         return;
     }
 
-    for (i = 0; i < data.length; i++) {
+    var to = (query.exactly) ? 1 : data.length;
+    for (i = 0; i < to; i++) {
 
         var newsItem = $('<div/>');
         $('<h3/>').addClass('news-header').text(data[i].title).appendTo(newsItem);
         $('<div/>').html(data[i].content).appendTo(newsItem);
         var footer = $('<div/>').appendTo(newsItem);
-        $('<span/>').html(data[i].source).appendTo(footer);
-        $('<span/>').text(data[i].receivingDate).appendTo(footer);
+        footer.addClass('news-footer');
+        $('<div/>').addClass('from').html(data[i].source).appendTo(footer);
+        $('<div/>').addClass('when').text(data[i].receivingDate).appendTo(footer);
 
         newsItem.appendTo(container);
     }
