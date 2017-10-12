@@ -9,6 +9,7 @@ $(function () {
         onSelect: function (suggestion) {
             query.queryString = suggestion.value;
             query.exactly = true;
+            currentPage = 1;
             update();
         }
     });
@@ -16,6 +17,7 @@ $(function () {
     suggestionsBox.change(function() {
         query.queryString = suggestionsBox.val();
         query.exactly = false;
+        currentPage = 1;
         update();
     });
 });
@@ -48,7 +50,7 @@ function update() {
 
 function request() {
     var request = (query.queryString.length > 0) ?
-        "/api/search?query=" + query.queryStringПутин
+        "/api/search?query=" + query.queryString
         + "&page=" + currentPage :
         "/api/news/?page=" + currentPage;
 
@@ -68,9 +70,14 @@ function onLoad(data) {
     var container = $('#news');
 
     if (data.length === 0) {
-        $('<h3/>').text('Кажется, мы достигли дна ;)').appendTo(container);
-        currentPage--;
-        return;
+        if (currentPage > 1) {
+            $('<h3/>').text('Кажется, мы достигли дна ;)').appendTo(container);
+            currentPage--;
+            return;
+        } else {
+            $('<h3/>').text('По вашему запросу ничего не найдено').appendTo(container);
+            return;
+        }
     }
 
     var to = (query.exactly) ? 1 : data.length;

@@ -1,5 +1,8 @@
 package ru.leasoft.challenge.aggregator.engine.parsing;
 
+import com.netflix.hystrix.HystrixCommand;
+import com.netflix.hystrix.HystrixCommandGroupKey;
+import com.netflix.hystrix.HystrixCommandProperties;
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -38,10 +41,8 @@ public class HttpResourceLoader {
     }
 
     public Document get(String url) throws IOException {
-        HttpHead headRequest = new HttpHead(url);
-        headRequest.setHeader("User-Agent", USER_AGENT);
 
-        HttpResponse response = httpClient.execute(headRequest);
+        HttpResponse response = headRequest(url);
 
         if (response.getStatusLine().getStatusCode() != 200) {
             throw new ParsingException("Invalid status code " + response.getStatusLine().getStatusCode());
@@ -64,12 +65,45 @@ public class HttpResourceLoader {
         throw new ParsingException("Unsupported content type " + contentType);
     }
 
+    private HttpResponse headRequest(String url) {
+        try {
+            return new RequestHeadCommand(url).execute();
+        } catch (Throwable t) {
+            if (t.getCause() != null) {
+                throw new ParsingException(t.getCause().getMessage());
+            } else {
+                throw new ParsingException("Connection timeout: " + url);
+            }
+        }
+    }
+
     private Document loadXml(String url) throws IOException {
         return Jsoup.connect(url).timeout(LOADING_TIMEOUT).parser(Parser.xmlParser()).ignoreContentType(true).get();
     }
 
     private Document loadHtml(String url) throws IOException {
         return Jsoup.connect(url).timeout(LOADING_TIMEOUT).parser(Parser.xmlParser()).get();
+    }
+
+    private class RequestHeadCommand extends HystrixCommand<HttpResponse> {
+
+        private String url;
+
+        RequestHeadCommand(String url) {
+            super(Setter.withGroupKey(
+                    HystrixCommandGroupKey.Factory.asKey("RequestHeadCommand"))
+                    .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()
+                            .withExecutionTimeoutInMilliseconds(LOADING_TIMEOUT))
+            );
+            this.url = url;
+        }
+
+        @Override
+        protected HttpResponse run() throws Exception {
+            HttpHead headRequest = new HttpHead(url);
+            headRequest.setHeader("User-Agent", USER_AGENT);
+            return httpClient.execute(headRequest);
+        }
     }
 
 }
