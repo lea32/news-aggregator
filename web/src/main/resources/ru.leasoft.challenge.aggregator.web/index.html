@@ -6,6 +6,7 @@
     <title>Аггрегатор новостей</title>
 
     <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
+    <script type="text/javascript" src="js/jquery.autocomplete.js"></script>
     <script type="text/javascript" src="js/news.js"></script>
 
     <link rel="stylesheet" href="css/news.css"/>
@@ -19,6 +20,7 @@
         <button onclick="go_back()">Назад</button>
         <button onclick="update()">Обновить (Страница&nbsp;<span id="pageNumber"></span>)</button>
         <button onclick="go_next()">Вперед</button>
+        <input type="text" name="suggest" id="autocomplete"/>
     </div>
 
 </header>

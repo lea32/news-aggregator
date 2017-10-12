@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.leasoft.challenge.aggregator.web.NewsRepositoryAccess;
 import ru.leasoft.challenge.aggregator.web.dto.BadRequestException;
 import ru.leasoft.challenge.aggregator.web.dto.NewsDto;
+import ru.leasoft.challenge.aggregator.web.dto.SuggestionsDto;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -47,11 +48,11 @@ public class NewsController {
 
     @RequestMapping(value = "/api/suggest", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public Future<List<String>> suggestAsync(@RequestParam String propose) {
+    public Future<SuggestionsDto> suggestAsync(@RequestParam String propose) {
         if (propose == null || propose.length() <= 1 || propose.length() > 5)
             throw new BadRequestException();
 
-        CompletableFuture<List<String>> future = new CompletableFuture<>();
+        CompletableFuture<SuggestionsDto> future = new CompletableFuture<>();
         service.suggest(future, propose);
         return future;
     }

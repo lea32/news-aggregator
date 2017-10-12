@@ -7,6 +7,7 @@ import ru.leasoft.challenge.aggregator.persistence.dao.NewsService;
 import ru.leasoft.challenge.aggregator.persistence.entities.News;
 import ru.leasoft.challenge.aggregator.web.NewsRepositoryAccess;
 import ru.leasoft.challenge.aggregator.web.dto.NewsDto;
+import ru.leasoft.challenge.aggregator.web.dto.SuggestionsDto;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -52,9 +53,13 @@ public class NewsRepositoryAccessService implements NewsRepositoryAccess {
 
     @Override
     @Async("webRequestsExecutor")
-    public void suggest(CompletableFuture<List<String>> result, String propose) {
+    public void suggest(CompletableFuture<SuggestionsDto> result, String propose) {
         if (result.isDone()) return;
 
-        result.complete(newsService.suggest(propose));
+        SuggestionsDto dto = new SuggestionsDto();
+        dto.setQuery("Unit"); //don't ask why...
+        dto.setSuggestions(newsService.suggest(propose));
+
+        result.complete(dto);
     }
 }

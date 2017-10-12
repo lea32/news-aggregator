@@ -1,6 +1,7 @@
 package ru.leasoft.challenge.aggregator.web;
 
 import ru.leasoft.challenge.aggregator.web.dto.NewsDto;
+import ru.leasoft.challenge.aggregator.web.dto.SuggestionsDto;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -13,5 +14,5 @@ public interface NewsRepositoryAccess {
 
     void searchInTitlePaginatedAsync(CompletableFuture<List<NewsDto>> result, String queryString, int from, int count);
 
-    void suggest(CompletableFuture<List<String>> result, String propose);
+    void suggest(CompletableFuture<SuggestionsDto> result, String propose);
 }

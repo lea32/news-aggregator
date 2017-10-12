@@ -1,7 +1,20 @@
 
-var currentPage = 0;
+$(function () {
+    $('#autocomplete').autocomplete({
+        serviceUrl: '/api/suggest',
+        paramName: 'propose',
+        minChars: 3,
+        onSelect: function (suggestion) {
+            console.log(suggestion.value);
+        }
+    });
+});
 
+
+
+var currentPage = 0;
 go_next();
+
 
 function go_next() {
     clearContainer();
@@ -22,7 +35,6 @@ function update() {
 }
 
 function request() {
-    console.log('request');
     $.get(
         "/api/news/?page=" + currentPage,
         function (data) {
