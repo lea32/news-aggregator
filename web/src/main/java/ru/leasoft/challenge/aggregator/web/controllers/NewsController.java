@@ -40,6 +40,7 @@ public class NewsController {
     @ResponseStatus(HttpStatus.OK)
     public Future<List<NewsDto>> getNewsAsync(@RequestParam String query, @RequestParam int page) {
         if (page <= 0) throw new BadRequestException();
+        if (query == null || query.replace(" ", "").isEmpty()) throw new BadRequestException();
         int from = (page - 1) * PAGE_SIZE;
 
         CompletableFuture<List<NewsDto>> future = new CompletableFuture<>();
